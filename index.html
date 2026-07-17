@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>了解自己的頭髮問題，才能對症下藥！</title>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap');
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --white:   #FFFFFF;
+      --paper:   #FAFAF9;   /* barely-off white surface */
+      --mist:    #F0F0EE;   /* light grey fill */
+      --line:    #E2E1DD;   /* hairline dividers */
+      --grey-3:  #B7B5AE;   /* muted grey, disabled/tertiary */
+      --grey-6:  #726F67;   /* stone grey, secondary text */
+      --ink:     #1D1C19;   /* near-black, primary text/ui */
+      --ink-soft:#39372F;
+      --signal:  #545045;   /* single warm-grey accent, used sparingly */
+      --card:    #FFFFFF;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--paper);
+      font-family: 'DM Sans', sans-serif;
+      color: var(--ink);
+      overflow: hidden;
+    }
+
+    /* ── SCREENS ── */
+    .screen {
+      position: fixed; inset: 0;
+      display: flex; flex-direction: column;
+      overflow-y: auto;
+      opacity: 1;
+      transform: translateX(0);
+      transition: opacity 0.35s ease, transform 0.35s ease;
+      will-change: opacity, transform;
+    }
+    .screen.hidden {
+      opacity: 0; pointer-events: none; transform: translateX(28px);
+    }
+
+    /* ── COVER ── */
+    #cover { align-items: stretch; background: var(--white); }
+    .cover-top {
+      padding: 48px 24px 0;
+    }
+    .cover-index {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px; color: var(--grey-3);
+      display: flex; justify-content: space-between; align-items: center;
+      padding-bottom: 22px; border-bottom: 1px solid var(--line);
+      letter-spacing: 0.02em;
+    }
+    .cover-body {
+      flex: 1; padding: 40px 24px 40px;
+      display: flex; flex-direction: column; align-items: flex-start;
+      justify-content: center;
+    }
+    .eyebrow {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px; font-weight: 500; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--grey-6); margin-bottom: 14px;
+    }
+    .cover-title {
+      font-family: 'Fraunces', serif;
+      font-optical-sizing: auto;
+      font-size: clamp(38px, 11vw, 56px); font-weight: 500; line-height: 1.04;
+      letter-spacing: -0.01em;
+      margin-bottom: 16px;
+      color: var(--ink);
+    }
+    .cover-sub {
+      font-size: 14px; line-height: 1.7; color: var(--grey-6);
+      max-width: 320px; margin-bottom: 40px;
+    }
+    .cover-meta {
+      display: flex; gap: 0; margin-bottom: 40px;
+      border-top: 1px solid var(--line);
+      width: 100%;
+    }
+    .cover-meta-item {
+      display: flex; flex-direction: column; gap: 5px;
+      padding: 16px 20px 0 0; flex: 1;
+      border-right: 1px solid var(--line);
+    }
+    .cover-meta-item:last-child { border-right: none; }
+    .cover-meta-item .val {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 20px; font-weight: 500; color: var(--ink);
+    }
+    .cover-meta-item .lbl {
+      font-size: 10px; font-weight: 500; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--grey-3);
+    }
+    .btn-primary {
+      align-self: stretch;
+      background: var(--ink); color: var(--white);
+      border: none; border-radius: 2px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px; font-weight: 500; letter-spacing: 0.14em;
+      text-transform: uppercase; padding: 18px 40px;
+      cursor: pointer; transition: background 0.2s, transform 0.15s;
+    }
+    .btn-primary:active { background: var(--ink-soft); transform: scale(0.98); }
+
+    /* ── QUESTION ── */
+    #question { align-items: stretch; background: var(--white); }
+    .q-topbar {
+      display: flex; align-items: center; gap: 14px;
+      padding: 22px 20px 18px;
+      flex-shrink: 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .q-progress-track {
+      flex: 1; height: 2px; background: var(--mist); border-radius: 0; overflow: hidden;
+    }
+    .q-progress-fill {
+      height: 100%; background: var(--ink); border-radius: 0;
+      transition: width 0.45s cubic-bezier(.4,0,.2,1);
+    }
+    .q-step-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px; font-weight: 500; color: var(--grey-6);
+      white-space: nowrap; letter-spacing: 0.02em;
+    }
+    .q-body { flex: 1; padding: 40px 22px 108px; }
+    .q-counter {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px; font-weight: 500; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--grey-3); margin-bottom: 14px;
+    }
+    .q-title {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(22px, 6.2vw, 30px); font-weight: 500; line-height: 1.28;
+      letter-spacing: -0.005em;
+      margin-bottom: 30px;
+      color: var(--ink);
+    }
+    .options-grid {
+      display: flex; flex-direction: column; gap: 0;
+      border-top: 1px solid var(--line);
+    }
+    .option-btn {
+      background: transparent;
+      border: none; border-bottom: 1px solid var(--line);
+      padding: 18px 4px; text-align: left; cursor: pointer;
+      transition: background 0.18s, padding-left 0.18s;
+      display: flex; align-items: center; gap: 16px;
+    }
+    .option-btn:active { background: var(--mist); }
+    .opt-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px; font-weight: 500;
+      color: var(--grey-3);
+      width: 18px; flex-shrink: 0;
+      transition: color 0.18s;
+    }
+    .opt-text {
+      font-size: 14px; line-height: 1.5; color: var(--ink-soft);
+      flex: 1;
+    }
+    .option-btn.selected { padding-left: 12px; background: var(--paper); }
+    .option-btn.selected .opt-label { color: var(--ink); }
+    .option-btn.selected .opt-text { color: var(--ink); font-weight: 500; }
+    .q-nav {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: var(--white); border-top: 1px solid var(--line);
+      padding: 12px 16px 16px; display: flex; gap: 10px;
+      z-index: 10;
+    }
+    .btn-ghost {
+      flex: 1; background: transparent;
+      border: 1px solid var(--ink); border-radius: 2px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px; font-weight: 500; letter-spacing: 0.1em;
+      text-transform: uppercase; padding: 14px; cursor: pointer; color: var(--ink);
+    }
+    .btn-ghost:active { background: var(--mist); }
+    .btn-next {
+      flex: 2.5; background: var(--ink); color: var(--white);
+      border: none; border-radius: 2px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px; font-weight: 500; letter-spacing: 0.1em;
+      text-transform: uppercase; padding: 14px; cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .btn-next:disabled { opacity: 0.28; cursor: default; }
+
+    /* ── RESULT ── */
+    #result { align-items: stretch; background: var(--paper); }
+    .result-header {
+      background: var(--white); color: var(--ink);
+      padding: 48px 24px 28px; flex-shrink: 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .result-header .eyebrow { color: var(--grey-6); margin-bottom: 12px; }
+    .result-header h1 {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(28px, 8.2vw, 42px); font-weight: 500; line-height: 1.08;
+      letter-spacing: -0.01em;
+      margin-bottom: 10px;
+    }
+    .result-header p { font-size: 13px; color: var(--grey-6); line-height: 1.6; }
+    .result-count-bar {
+      background: var(--white); color: var(--grey-6);
+      padding: 12px 24px; text-align: left;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px; font-weight: 500; letter-spacing: 0.06em;
+      border-bottom: 1px solid var(--line);
+    }
+    .products-list {
+      flex: 1; padding: 20px; display: flex; flex-direction: column;
+      gap: 1px; padding-bottom: 36px;
+      background: var(--line);
+      border: 1px solid var(--line);
+    }
+    .product-card {
+      background: var(--card); display: flex; align-items: center;
+      gap: 16px; padding: 18px 16px;
+      opacity: 0; animation: slideUp 0.4s ease forwards;
+    }
+    @keyframes slideUp {
+      from { opacity:0; transform: translateY(10px); }
+      to   { opacity:1; transform: translateY(0); }
+    }
+    .product-img {
+      width: 76px; height: 76px; min-width: 76px;
+      border-radius: 4px; overflow: hidden;
+      background: var(--mist);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 30px;
+    }
+    .product-img img {
+      width: 100%; height: 100%;
+      object-fit: contain;
+      background: var(--paper);
+      display: block;
+    }
+    .product-info { flex: 1; min-width: 0; }
+    .product-tag {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px; font-weight: 500; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--grey-3); margin-bottom: 6px;
+    }
+    .product-name {
+      font-family: 'Fraunces', serif;
+      font-size: 17px; font-weight: 500; line-height: 1.25;
+      margin-bottom: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      color: var(--ink);
+    }
+    .btn-buy {
+      display: inline-block;
+      background: var(--white); color: var(--ink);
+      border: 1px solid var(--ink); border-radius: 2px; text-decoration: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 10px; font-weight: 500; letter-spacing: 0.08em;
+      text-transform: uppercase; padding: 9px 16px; cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .btn-buy:active { background: var(--ink); color: var(--white); }
+    .retake-wrap { padding: 0 20px 48px; display: flex; flex-direction: column; gap: 10px; }
+    .btn-send {
+      width: 100%; background: var(--ink); color: var(--white);
+      border: none; border-radius: 2px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px; font-weight: 500; letter-spacing: 0.1em;
+      text-transform: uppercase; padding: 16px; cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-send:active { background: var(--ink-soft); }
+    .btn-retake {
+      width: 100%; background: transparent;
+      border: 1px solid var(--ink); border-radius: 2px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px; font-weight: 500; letter-spacing: 0.1em;
+      text-transform: uppercase; padding: 16px; cursor: pointer; color: var(--ink);
+    }
+    .btn-retake:active { background: var(--mist); }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     COVER
+══════════════════════════════════════ -->
+<div id="cover" class="screen">
+  <div class="cover-top">
+    <div class="cover-index">
+      <span>頭髮診斷</span>
+      <span>HAIR / G01</span>
+    </div>
+  </div>
+  <div class="cover-body">
+    <div class="eyebrow">約 2 分鐘 · 10 題</div>
+    <h1 class="cover-title">頭髮<br/>小測試</h1>
+    <p class="cover-sub">了解自己的頭髮問題，才能對症下藥！透過幾個簡單問題，為你配對合適的髮品。</p>
+    <div class="cover-meta">
+      <div class="cover-meta-item">
+        <span class="val">10</span>
+        <span class="lbl">問題</span>
+      </div>
+      <div class="cover-meta-item">
+        <span class="val">02:00</span>
+        <span class="lbl">預估時間</span>
+      </div>
+      <div class="cover-meta-item">
+        <span class="val">10+</span>
+        <span class="lbl">產品</span>
+      </div>
+    </div>
+    <button class="btn-primary" onclick="startQuiz()">開始診斷</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     QUESTION
+══════════════════════════════════════ -->
+<div id="question" class="screen hidden">
+  <div class="q-topbar">
+    <div class="q-progress-track">
+      <div class="q-progress-fill" id="progressFill"></div>
+    </div>
+    <span class="q-step-label" id="qStepLabel"></span>
+  </div>
+  <div class="q-body">
+    <div class="q-counter" id="qCounter"></div>
+    <h2 class="q-title" id="qTitle"></h2>
+    <div class="options-grid" id="optionsGrid"></div>
+  </div>
+  <div class="q-nav">
+    <button class="btn-ghost" id="btnPrev" onclick="prevQuestion()">← 返回</button>
+    <button class="btn-next" id="btnNext" onclick="nextQuestion()" disabled>繼續 →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     RESULT
+══════════════════════════════════════ -->
+<div id="result" class="screen hidden">
+  <div class="result-header">
+    <div class="eyebrow">您的專屬儀式</div>
+    <h1>您的專屬髮品推薦</h1>
+    <p>根據您的答案，為您精心挑選</p>
+  </div>
+  <div class="result-count-bar" id="resultCountBar"></div>
+  <div class="products-list" id="productsList"></div>
+  <div class="retake-wrap">
+    <button class="btn-send" onclick="sendToChat()">📨 傳送結果到聊天室</button>
+    <button class="btn-retake" onclick="retakeQuiz()">再一次</button>
+  </div>
+</div>
+
+<script>
+const PRODUCTS = {
+  P01: { name: "No.2 洗髮精 1000ML", price: "NT$1200", image: "https://raw.githubusercontent.com/sh-arch2260/product-catalog/master/chihtsai/no-2.png", storeUrl: "https://www.chihtsai.net/products/no2-shampoo" },
+  P02: { name: "No.5 洗髮精 1000ML", price: "NT$1200", image: "https://raw.githubusercontent.com/sh-arch2260/product-catalog/master/chihtsai/no-5.png", storeUrl: "https://www.chihtsai.net/products/no5-shampoo" },
+  P03: { name: "No.1 洗髮精 1000ML", price: "NT$1200", image: "https://raw.githubusercontent.com/sh-arch2260/product-catalog/master/chihtsai/no-1.png", storeUrl: "https://www.chihtsai.net/products/no1-shampoo" },
+  P04: { name: "No.6 洗髮精 1000ML", price: "NT$1200", image: "https://raw.githubusercontent.com/sh-arch2260/product-catalog/master/chihtsai/no-6.png", storeUrl: "https://www.chihtsai.net/products/no6-shampoo" },
+  P05: { name: "No.7 平衡潤絲 250ML", price: "NT$400", image: "https://raw.githubusercontent.com/sh-arch2260/product-catalog/master/chihtsai/no-7.png", storeUrl: "https://www.chihtsai.net/products/no-7-ph-balancing-rinse" },
+  P06: { name: "橄欖洗髮精 500ML", price: "NT$700", image: "https://raw.githubusercontent.com/sh-arch2260/product-catalog/master/chihtsai/olive-1.png", storeUrl: "https://www.chihtsai.net/products/chihtsai-olive-shampoo" },
+  P07: { name: "No.8 完全潤絲 1000ML", price: "NT$1200", image: "https://raw.githubusercontent.com/sh-arch2260/product-catalog/master/chihtsai/no-8.png", storeUrl: "https://www.chihtsai.net/products/for-all-hair-types" },
+  P08: { name: "橄欖護髮素 500ML", price: "NT$500", image: "https://raw.githubusercontent.com/sh-arch2260/product-catalog/master/chihtsai/olive-2.png", storeUrl: "https://www.chihtsai.net/products/conditioner-d-panthenol-olive-oil" },
+};
+
+const QUESTIONS = [
+  {
+    title: "您目前最在意的頭髮狀況是什麼？",
+    options: [
+      { text: "經常出油、髮根扁塌", product: "P01" },
+      { text: "髮尾乾燥、分岔明顯", product: "P02" },
+    ]
+  },
+  {
+    title: "您的髮絲粗細屬於？",
+    options: [
+      { text: "極細、塌軟", product: "P01" },
+      { text: "中等、易打理", product: "P03" },
+      { text: "粗硬、毛量多", product: "P04"},
+    ]
+  },
+  {
+    title: "您通常多久洗一次頭？",
+    options: [
+      { text: "每日或隔日洗", product: null },
+      { text: "每週一次或更少", product: null },
+    ]
+  },
+  {
+    title: "您平時有護髮的習慣嗎？",
+    options: [
+      { text: "幾乎不使用任何護髮品", product: null },
+      { text: "每次洗髮都使用護髮素", product: null },
+      { text: "偶爾做深層護理（髮膜）", product: null },
+    ]
+  },
+  {
+    title: "您平時使用熱造型工具的頻率如何？（如吹風機、離子夾、電棒捲）",
+    options: [
+      { text: "僅使用吹風機", product: "P05" },
+      { text: "會使用離子夾或電棒捲", product: "P06" },
+      { text: "幾乎不使用熱造型工具", product: "P07" },
+    ]
+  },
+  {
+    title: "您一年內進行染髮、燙髮或漂髮的頻率為何？",
+    options: [
+      { text: "每 1–2 個月一次（定期保養）", product: ["P06","P08"] },
+      { text: "每年約 3–4 次", product: ["P06","P08"] },
+      { text: "每年約 1–2 次", product: ["P06","P08"] },
+      { text: "從未染燙", product: "P04" },
+    ]
+  },
+  {
+    title: "洗髮後，您最希望達到哪種效果？",
+    options: [
+      { text: "蓬鬆自然、輕盈", product: "P03" },
+      { text: "絲滑貼服、有光澤", product: ["P02","P07"] },
+      { text: "深度保濕、有彈性", product: ["P06","P08"] },
+    ]
+  },
+];
+
+let currentQ = 0;
+let answers  = new Array(QUESTIONS.length).fill(null);
+
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+  document.getElementById(id).scrollTop = 0;
+}
+
+function getRecommended() {
+  const seen = new Set();
+  const list = [];
+  QUESTIONS.forEach((q, qi) => {
+    if (answers[qi] !== null) {
+      const products = q.options[answers[qi]].product;
+      const pids = Array.isArray(products) ? products : [products];
+      pids.forEach(pid => {
+        if (pid && !seen.has(pid)) { seen.add(pid); list.push(pid); }
+      });
+    }
+  });
+  return list;
+}
+
+function startQuiz() {
+  currentQ = 0;
+  answers.fill(null);
+  renderQuestion();
+  show('question');
+}
+
+function renderQuestion() {
+  const q     = QUESTIONS[currentQ];
+  const total = QUESTIONS.length;
+  const pct   = (currentQ / total) * 100;
+
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('qStepLabel').textContent   = `${String(currentQ + 1).padStart(2,'0')} / ${String(total).padStart(2,'0')}`;
+
+  document.getElementById('qCounter').textContent = `第 ${currentQ + 1} 題，共 ${total} 題`;
+  document.getElementById('qTitle').textContent   = q.title;
+
+  const grid   = document.getElementById('optionsGrid');
+  const labels = ['A', 'B', 'C', 'D', 'E'];
+  grid.innerHTML = '';
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn' + (answers[currentQ] === i ? ' selected' : '');
+    btn.innerHTML = `<span class="opt-label">${labels[i]}</span><span class="opt-text">${opt.text}</span>`;
+    btn.onclick = () => selectOption(i);
+    grid.appendChild(btn);
+  });
+
+  const isFirst = currentQ === 0;
+  const isLast  = currentQ === total - 1;
+  document.getElementById('btnPrev').style.display = isFirst ? 'none' : 'block';
+  const btnNext = document.getElementById('btnNext');
+  btnNext.disabled    = answers[currentQ] === null;
+  btnNext.textContent = isLast ? '查看結果 →' : '繼續 →';
+}
+
+function selectOption(i) {
+  answers[currentQ] = i;
+  document.querySelectorAll('.option-btn').forEach((b, idx) =>
+    b.classList.toggle('selected', idx === i)
+  );
+  document.getElementById('btnNext').disabled = false;
+}
+
+function nextQuestion() {
+  if (answers[currentQ] === null) return;
+  if (currentQ < QUESTIONS.length - 1) { currentQ++; renderQuestion(); }
+  else showResult();
+}
+
+function prevQuestion() {
+  if (currentQ > 0) { currentQ--; renderQuestion(); }
+  else show('cover');
+}
+
+function showResult() {
+  const recommended = getRecommended();
+
+  document.getElementById('resultCountBar').textContent =
+    `${String(recommended.length).padStart(2,'0')} 款符合您髮質的產品`;
+
+  const list = document.getElementById('productsList');
+  list.innerHTML = '';
+  recommended.forEach((pid, idx) => {
+    const p    = PRODUCTS[pid];
+    if (p) {
+      const card = document.createElement('div');
+      card.className = 'product-card';
+      card.style.animationDelay = (idx * 0.08 + 0.04) + 's';
+      card.innerHTML = renderProductCard(p);
+      list.appendChild(card);
+    }
+  });
+
+  show('result');
+}
+
+function renderProductCard(p) {
+  const imgHTML = p.image
+    ? `<div class="product-img"><img src="${p.image}" alt="${p.name}" /></div>`
+    : `<div class="product-img">${p.emoji || ''}</div>`;
+  return `
+    ${imgHTML}
+    <div class="product-info">
+      <div class="product-name">${p.name}</div>
+      <a class="btn-buy" href="${p.storeUrl}" target="_blank">立即購買</a>
+    </div>`;
+}
+
+function retakeQuiz() {
+  answers.fill(null);
+  currentQ = 0;
+  renderQuestion();
+  show('question');
+}
+
+function buildFlexBubble(p) {
+  return {
+    type: "bubble",
+    size: "kilo",
+    body: {
+      type: "box",
+      layout: "vertical",
+      paddingAll: "0px",
+      backgroundColor: "#FFFFFF",
+      contents: [
+        {
+          type: "box",
+          layout: "vertical",
+          paddingAll: "0px",
+          contents: [
+            {
+              type: "image",
+              url: p.image || "https://via.placeholder.com/300",
+              size: "full",
+              aspectRatio: "1:1",
+              aspectMode: "cover"
+            },
+            {
+              type: "box",
+              layout: "vertical",
+              contents: [],
+              position: "absolute",
+              background: {
+                type: "linearGradient",
+                angle: "0deg",
+                startColor: "#1D1C19cc",
+                endColor: "#1D1C1900"
+              },
+              width: "100%",
+              height: "50%",
+              offsetBottom: "0px",
+              offsetStart: "0px"
+            },
+            {
+              type: "box",
+              layout: "vertical",
+              position: "absolute",
+              offsetBottom: "0px",
+              offsetStart: "0px",
+              offsetEnd: "0px",
+              paddingAll: "12px",
+              contents: [
+                {
+                  type: "text",
+                  text: p.name,
+                  color: "#FFFFFF",
+                  size: "sm",
+                  weight: "bold",
+                  wrap: true
+                },
+                {
+                  type: "text",
+                  text: p.price,
+                  color: "#E2E1DD",
+                  size: "sm",
+                  weight: "bold"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          type: "box",
+          layout: "vertical",
+          backgroundColor: "#FFFFFF",
+          paddingAll: "12px",
+          contents: [
+            {
+              type: "button",
+              action: {
+                type: "uri",
+                label: "立即購買",
+                uri: p.storeUrl
+              },
+              style: "primary",
+              color: "#1D1C19",
+              height: "sm"
+            }
+          ]
+        }
+      ]
+    }
+  };
+}
+
+function buildIntroBubble() {
+  return {
+    type: "bubble",
+    size: "kilo",
+    body: {
+      type: "box",
+      layout: "vertical",
+      paddingAll: "0px",
+      backgroundColor: "#FFFFFF",
+      contents: [
+        {
+          type: "image",
+          url: "https://raw.githubusercontent.com/sh-arch2260/product-catalog/master/esuchen/result-card.png",
+          size: "full",
+          aspectRatio: "1:1",
+          aspectMode: "cover"
+        },
+        {
+          type: "box",
+          layout: "horizontal",
+          backgroundColor: "#FFFFFF",
+          paddingAll: "18px",
+          contents: [
+            {
+              type: "text",
+              text: "您的專屬髮品推薦",
+              color: "#39372F",
+              size: "sm",
+              weight: "bold",
+              gravity: "center",
+              flex: 1
+            },
+            {
+              type: "text",
+              text: "→",
+              color: "#39372F",
+              size: "md",
+              weight: "bold",
+              align: "end",
+              gravity: "center"
+            }
+          ]
+        }
+      ]
+    }
+  };
+}
+
+async function sendToChat() {
+  const recommended = getRecommended();
+
+  if (recommended.length === 0) {
+    alert("沒有符合的產品推薦！");
+    return;
+  }
+
+  const bubbles = [buildIntroBubble(), ...recommended.map(pid => buildFlexBubble(PRODUCTS[pid]))];
+
+  try {
+    await liff.sendMessages([
+      {
+        type: "flex",
+        altText: "您的專屬髮品推薦 🌿",
+        contents: {
+          type: "carousel",
+          contents: bubbles
+        }
+      }
+    ]);
+    alert("已傳送到聊天室！");
+  } catch (e) {
+    console.error(e);
+    alert("傳送失敗，請確認是否在 LINE 中開啟。");
+  }
+}
+
+(async () => {
+  try {
+    await liff.init({ liffId: "2010741143-CrEdYLGJ" });
+  } catch (e) {
+    console.warn("LIFF init skipped (running outside LINE):", e.message);
+  }
+})();
+</script>
+</body>
+</html>
