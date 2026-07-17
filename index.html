@@ -292,7 +292,7 @@
   <div class="cover-top">
     <div class="cover-index">
       <span>頭髮診斷</span>
-      <span>HAIR / G01</span>
+      <span>HAIR / G02</span>
     </div>
   </div>
   <div class="cover-body">
@@ -357,14 +357,9 @@
 
 <script>
 const PRODUCTS = {
-  P01: { name: "No.2 洗髮精 1000ML", price: "NT$1200", image: "https://raw.githubusercontent.com/sh-arch2260/product-catalog/master/chihtsai/no-2.png", storeUrl: "https://www.chihtsai.net/products/no2-shampoo" },
-  P02: { name: "No.5 洗髮精 1000ML", price: "NT$1200", image: "https://raw.githubusercontent.com/sh-arch2260/product-catalog/master/chihtsai/no-5.png", storeUrl: "https://www.chihtsai.net/products/no5-shampoo" },
-  P03: { name: "No.1 洗髮精 1000ML", price: "NT$1200", image: "https://raw.githubusercontent.com/sh-arch2260/product-catalog/master/chihtsai/no-1.png", storeUrl: "https://www.chihtsai.net/products/no1-shampoo" },
-  P04: { name: "No.6 洗髮精 1000ML", price: "NT$1200", image: "https://raw.githubusercontent.com/sh-arch2260/product-catalog/master/chihtsai/no-6.png", storeUrl: "https://www.chihtsai.net/products/no6-shampoo" },
-  P05: { name: "No.7 平衡潤絲 250ML", price: "NT$400", image: "https://raw.githubusercontent.com/sh-arch2260/product-catalog/master/chihtsai/no-7.png", storeUrl: "https://www.chihtsai.net/products/no-7-ph-balancing-rinse" },
-  P06: { name: "橄欖洗髮精 500ML", price: "NT$700", image: "https://raw.githubusercontent.com/sh-arch2260/product-catalog/master/chihtsai/olive-1.png", storeUrl: "https://www.chihtsai.net/products/chihtsai-olive-shampoo" },
-  P07: { name: "No.8 完全潤絲 1000ML", price: "NT$1200", image: "https://raw.githubusercontent.com/sh-arch2260/product-catalog/master/chihtsai/no-8.png", storeUrl: "https://www.chihtsai.net/products/for-all-hair-types" },
-  P08: { name: "橄欖護髮素 500ML", price: "NT$500", image: "https://raw.githubusercontent.com/sh-arch2260/product-catalog/master/chihtsai/olive-2.png", storeUrl: "https://www.chihtsai.net/products/conditioner-d-panthenol-olive-oil" },
+  P01: { name: "敏銳精油洗髮精 535ML", price: "NT$700", image: "https://raw.githubusercontent.com/sh-arch2260/product-catalog/master/chihtsai/sense.png", storeUrl: "https://www.chihtsai.net/products/dandruff-shampoo" },
+  P02: { name: "智慧精油洗髮精 535ML", price: "NT$700", image: "https://raw.githubusercontent.com/sh-arch2260/product-catalog/master/chihtsai/wisdom.png", storeUrl: "https://www.chihtsai.net/products/wisdom-camellia-essential-shampoo" },
+  P03: { name: "和平精油洗髮精 535ML", price: "NT$700", image: "https://raw.githubusercontent.com/sh-arch2260/product-catalog/master/chihtsai/peace.png", storeUrl: "https://www.chihtsai.net/products/peace-essential-oil-shampoo" },
 };
 
 const QUESTIONS = [
@@ -380,7 +375,7 @@ const QUESTIONS = [
     options: [
       { text: "極細、塌軟", product: "P01" },
       { text: "中等、易打理", product: "P03" },
-      { text: "粗硬、毛量多", product: "P04"},
+      { text: "粗硬、毛量多", product: "P02"},
     ]
   },
   {
@@ -401,26 +396,26 @@ const QUESTIONS = [
   {
     title: "您平時使用熱造型工具的頻率如何？（如吹風機、離子夾、電棒捲）",
     options: [
-      { text: "僅使用吹風機", product: "P05" },
-      { text: "會使用離子夾或電棒捲", product: "P06" },
-      { text: "幾乎不使用熱造型工具", product: "P07" },
+      { text: "僅使用吹風機", product: "P02" },
+      { text: "會使用離子夾或電棒捲", product: "P02" },
+      { text: "幾乎不使用熱造型工具", product: "P03" },
     ]
   },
   {
     title: "您一年內進行染髮、燙髮或漂髮的頻率為何？",
     options: [
-      { text: "每 1–2 個月一次（定期保養）", product: ["P06","P08"] },
-      { text: "每年約 3–4 次", product: ["P06","P08"] },
-      { text: "每年約 1–2 次", product: ["P06","P08"] },
-      { text: "從未染燙", product: "P04" },
+      { text: "每 1–2 個月一次（定期保養）", product: "P02" },
+      { text: "每年約 3–4 次", product: "P03" },
+      { text: "每年約 1–2 次", product: "P03" },
+      { text: "從未染燙", product: "P03" },
     ]
   },
   {
     title: "洗髮後，您最希望達到哪種效果？",
     options: [
-      { text: "蓬鬆自然、輕盈", product: "P03" },
-      { text: "絲滑貼服、有光澤", product: ["P02","P07"] },
-      { text: "深度保濕、有彈性", product: ["P06","P08"] },
+      { text: "蓬鬆自然、輕盈", product: "P01" },
+      { text: "絲滑貼服、有光澤", product: "P02"},
+      { text: "深度保濕、有彈性", product: "P03"},
     ]
   },
 ];
